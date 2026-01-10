@@ -5,18 +5,22 @@ import { Heart, MapPinIcon, Trash2Icon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import useFetch from "@/hooks/use-fetch";
-import { saveJob } from "@/api/apiJobs";
-import { useState } from "react";
+import { deleteJob, saveJob } from "@/api/apiJobs";
+import { useState, useEffect } from "react";
 
 const JobCard = ({
   job,
   isMyJob = false,
   savedInit = false, // initial saved state from backend
-  onJobSaved = () => {} // callback to refresh saved jobs
+  onJobSaved = () => { }, // callback to refresh saved jobs
+  onJobAction = () => { } // callback to refresh all jobs
 }) => {
   const [saved, setSaved] = useState(savedInit);
 
   const { fn: fnSavedJob, loading: loadingSavedJob } = useFetch(saveJob);
+  const { fn: fnDeleteJob, loading: loadingDeleteJob } = useFetch(deleteJob, {
+    job_id: job.id,
+  });
   const { user } = useUser();
 
   const handleSaveJob = async () => {
@@ -36,6 +40,7 @@ const JobCard = ({
         alreadySaved: previousState, // tells backend whether to insert or delete
       });
       onJobSaved(); // notify parent
+      onJobAction(); // notify parent
     } catch (err) {
       console.error("Error saving/un-saving job:", err);
       // rollback UI if API fails
@@ -43,13 +48,27 @@ const JobCard = ({
     }
   };
 
+  const handleDeleteJob = async () => {
+    await fnDeleteJob();
+    onJobAction();
+  };
+
+  useEffect(() => {
+    if (savedInit !== undefined) setSaved(savedInit);
+  }, [savedInit]);
+
   return (
     <Card className="flex flex-col h-full">
       <CardHeader>
         <CardTitle className="flex justify-between font-bold">
           {job.title}
           {isMyJob && (
-            <Trash2Icon fill="red" size={18} className="text-red-300 cursor-pointer" />
+            <Trash2Icon
+              fill="red"
+              size={18}
+              className="text-red-300 cursor-pointer"
+              onClick={handleDeleteJob}
+            />
           )}
         </CardTitle>
       </CardHeader>
