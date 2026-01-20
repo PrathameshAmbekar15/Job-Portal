@@ -16,6 +16,8 @@ const Header = () => {
 
   const { user, isLoaded, isSignedIn } = useUser();
 
+  console.log("Header User State:", { isLoaded, isSignedIn, userRole: user?.unsafeMetadata?.role });
+
   // Open sign-in modal if ?sign-in=true exists
   useEffect(() => {
     if (searchParams.get("sign-in") === "true") {

@@ -3,15 +3,19 @@ import { Navigate, useLocation } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
     const { isSignedIn, user, isLoaded } = useUser();
-    const { pathname } = useLocation()
+    const { pathname } = useLocation();
+
+    console.log("Protected Route Check:", { isLoaded, isSignedIn, user, pathname });
 
     if (isLoaded && !isSignedIn && isSignedIn !== undefined) {
+        console.log("Not signed in, redirecting to home with sign-in=true");
         return <Navigate to="/?sign-in=true" />;
     }
 
-     
-    if (user!==undefined && !user.unsafeMetadata?.role && pathname!=="/onboarding")return <Navigate to="/onboarding"/> 
-
+    if (isLoaded && isSignedIn && !user?.unsafeMetadata?.role && pathname !== "/onboarding") {
+        console.log("User has no role, redirecting to onboarding");
+        return <Navigate to="/onboarding" />;
+    }
 
     return children;
 };
