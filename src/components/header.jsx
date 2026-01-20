@@ -95,10 +95,7 @@ const Header = () => {
           onClick={handleOverlayClick}
         >
           <div onClick={(e) => e.stopPropagation()}>
-            <SignIn
-              signUpForceRedirectUrl="/onboarding"
-              fallbackRedirectUrl="/onboarding"
-            />
+            <SignIn />
           </div>
         </div>
       )}
