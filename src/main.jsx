@@ -7,6 +7,8 @@ import { ClerkProvider } from "@clerk/clerk-react";
 import { shadesOfPurple } from "@clerk/themes";
 
 // Import your publishable key
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
 console.log("Clerk Publishable Key:", PUBLISHABLE_KEY ? "Found" : "NOT FOUND");
 console.log("Clerk afterSignOutUrl:", "/");
 console.log("Clerk signInFallbackRedirectUrl:", "/onboarding");
